@@ -45,6 +45,11 @@ public class PlayerMovement : MonoBehaviour
     private void HandleLocomotion()
     {
         playerRigidbody.velocity = new Vector2(playerDirection.x * playerSpeed, playerDirection.y * playerSpeed);
+
+        if(playerDirection.x == 0 && playerDirection.y == 0)
+        {
+            playerRigidbody.velocity = Vector2.zero;
+        }
     }
 
     private void HandleAnimations()
