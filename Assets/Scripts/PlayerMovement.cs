@@ -32,8 +32,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleInput()
     {
-        playerDirection.x = Input.GetAxis("Horizontal");
-        playerDirection.y = Input.GetAxis("Vertical");
+        playerDirection.x = Input.GetAxisRaw("Horizontal");
+        playerDirection.y = Input.GetAxisRaw("Vertical");
         playerDirection.Normalize();
 
         if(Input.GetKeyDown(KeyCode.Mouse0))
