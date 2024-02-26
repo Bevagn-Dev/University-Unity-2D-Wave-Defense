@@ -278,7 +278,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_walk_run_8
+      name: Warrior_Right_run_1
       rect:
         serializedVersion: 2
         x: 640
@@ -299,7 +299,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_walk_run_9
+      name: Warrior_Right_run_2
       rect:
         serializedVersion: 2
         x: 720
@@ -320,7 +320,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_walk_run_10
+      name: Warrior_Right_run_3
       rect:
         serializedVersion: 2
         x: 800
@@ -341,7 +341,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_walk_run_11
+      name: Warrior_Right_run_4
       rect:
         serializedVersion: 2
         x: 880
@@ -530,7 +530,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_walk_run_20
+      name: Warrior_Left_run_1
       rect:
         serializedVersion: 2
         x: 640
@@ -551,7 +551,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_walk_run_21
+      name: Warrior_Left_run_2
       rect:
         serializedVersion: 2
         x: 720
@@ -572,7 +572,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_walk_run_22
+      name: Warrior_Left_run_3
       rect:
         serializedVersion: 2
         x: 800
@@ -593,7 +593,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_walk_run_23
+      name: Warrior_Left_run_4
       rect:
         serializedVersion: 2
         x: 880
@@ -782,7 +782,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_walk_run_32
+      name: Warrior_Down_run_1
       rect:
         serializedVersion: 2
         x: 640
@@ -803,7 +803,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_walk_run_33
+      name: Warrior_Down_run_2
       rect:
         serializedVersion: 2
         x: 720
@@ -824,7 +824,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_walk_run_34
+      name: Warrior_Down_run_3
       rect:
         serializedVersion: 2
         x: 800
@@ -845,7 +845,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_walk_run_35
+      name: Warrior_Down_run_4
       rect:
         serializedVersion: 2
         x: 880
@@ -1034,11 +1034,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_walk_run_44
+      name: Warrior_UP_run_1
       rect:
         serializedVersion: 2
         x: 640
-        y: 0
+        y: 1
         width: 80
         height: 80
       alignment: 9
@@ -1055,7 +1055,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_walk_run_45
+      name: Warrior_UP_run_2
       rect:
         serializedVersion: 2
         x: 720
@@ -1076,7 +1076,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_walk_run_46
+      name: Warrior_UP_run_3
       rect:
         serializedVersion: 2
         x: 800
@@ -1097,7 +1097,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Warrior_walk_run_47
+      name: Warrior_UP_run_4
       rect:
         serializedVersion: 2
         x: 880
@@ -1128,10 +1128,24 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      Warrior_Down_run_1: 23293533
+      Warrior_Down_run_2: -1141830924
+      Warrior_Down_run_3: -152819167
+      Warrior_Down_run_4: -1372431683
+      Warrior_Left_run_1: 2019085745
+      Warrior_Left_run_2: 1766003863
+      Warrior_Left_run_3: 1780495035
+      Warrior_Left_run_4: -1930999290
+      Warrior_Right_run_1: 630942293
+      Warrior_Right_run_2: -111613821
+      Warrior_Right_run_3: -738348856
+      Warrior_Right_run_4: -601918898
+      Warrior_UP_run_1: -1417852094
+      Warrior_UP_run_2: 3238263
+      Warrior_UP_run_3: 1428634613
+      Warrior_UP_run_4: 1570321427
       Warrior_walk_run_0: 1013144399
       Warrior_walk_run_1: 1901487688
-      Warrior_walk_run_10: -738348856
-      Warrior_walk_run_11: -601918898
       Warrior_walk_run_12: -167471691
       Warrior_walk_run_13: -1386919656
       Warrior_walk_run_14: 456752917
@@ -1141,10 +1155,6 @@ TextureImporter:
       Warrior_walk_run_18: -1519126805
       Warrior_walk_run_19: 1032969773
       Warrior_walk_run_2: 2134775168
-      Warrior_walk_run_20: 2019085745
-      Warrior_walk_run_21: 1766003863
-      Warrior_walk_run_22: 1780495035
-      Warrior_walk_run_23: -1930999290
       Warrior_walk_run_24: 210644930
       Warrior_walk_run_25: -823783362
       Warrior_walk_run_26: 476088082
@@ -1154,10 +1164,6 @@ TextureImporter:
       Warrior_walk_run_3: -2008503522
       Warrior_walk_run_30: -649451080
       Warrior_walk_run_31: -681354445
-      Warrior_walk_run_32: 23293533
-      Warrior_walk_run_33: -1141830924
-      Warrior_walk_run_34: -152819167
-      Warrior_walk_run_35: -1372431683
       Warrior_walk_run_36: 1284710026
       Warrior_walk_run_37: 1654139636
       Warrior_walk_run_38: 1725192127
@@ -1167,15 +1173,9 @@ TextureImporter:
       Warrior_walk_run_41: -1941304646
       Warrior_walk_run_42: 104772198
       Warrior_walk_run_43: 552895938
-      Warrior_walk_run_44: -1417852094
-      Warrior_walk_run_45: 3238263
-      Warrior_walk_run_46: 1428634613
-      Warrior_walk_run_47: 1570321427
       Warrior_walk_run_5: 652509749
       Warrior_walk_run_6: -932563827
       Warrior_walk_run_7: -1283158456
-      Warrior_walk_run_8: 630942293
-      Warrior_walk_run_9: -111613821
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
