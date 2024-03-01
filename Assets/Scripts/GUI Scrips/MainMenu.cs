@@ -1,39 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    
-    public GameObject settingsObj;
+    // References to the quit game object
     public GameObject quitObj;
 
+    // Method to handle starting the game
     public void HandlePlay(int sceneIndex)
     {
-        SceneManager.LoadScene(sceneIndex);
+        // Load the scene with the specified index
+        SceneManager.LoadScene(sceneIndex); 
     }
 
-    public void HandleSettings()
-    {
-        settingsObj.SetActive(true);
-        quitObj.SetActive(false);
-    }
-
+    // Method to handle displaying the quit confirmation menu
     public void HandleQuit()
     {
-        settingsObj.SetActive(false);
-        quitObj.SetActive(true);
+        // Activate the quit menu
+        quitObj.SetActive(true); 
     }
 
+    // Method to handle confirming quitting the application
     public void HandleConfirm()
     {
-        Application.Quit();
+        // Quit the application
+        Application.Quit(); 
     }
 
+    // Method to handle denying quitting the application
     public void HandleDeny()
     {
-        settingsObj.SetActive(true);
-        quitObj.SetActive(false);
+        // Deactivate the quit menu
+        quitObj.SetActive(false); 
     }
 }

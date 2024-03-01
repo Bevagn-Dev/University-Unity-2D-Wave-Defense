@@ -4,49 +4,57 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    [Header("Attack parameters")]
-    [SerializeField] private float attackForwardOffset = 1f; 
-    [SerializeField] private float attackHeightOffset = 1f; 
+    // Attack Parameters
+    [Header("Attack Parameters")]
+    [SerializeField] private float attackForwardOffset = 1f;
+    [SerializeField] private float attackHeightOffset = 1f;
     [SerializeField] private LayerMask enemyLayer;
 
+    // Attack position
     private Vector2 attackPosition;
+
+    // References to other scripts
     private PlayerMovement playerMovement;
+    private PlayerManager playerManager;
 
-    private float attackDelay;
-
-    private void Awake() 
+    private void Awake()
     {
-        playerMovement = GetComponent<PlayerMovement>();
+        // Initialization
+        Init();
     }
 
-    private void Update() 
+    // Method to handle player attack
+    public void HandleAttack()
     {
-        if(Time.time >= attackDelay)
-        {
-            if(Input.GetKeyDown(KeyCode.Mouse0))
-            {
-                HandleAttack();
-                attackDelay = Time.time + 1f / playerMovement.playerValues.attackRate;
-            }        
-        }
-    }
-
-    private void HandleAttack()
-    {
+        // Trigger attack animation
         playerMovement.playerAnimator.SetTrigger("Attack");
 
+        // Plays sound from sound manager using string
+        SoundManager.Instance.Play("AttackSound");
+
+        // Calculate attack position
         attackPosition = new Vector2(transform.position.x, transform.position.y + attackHeightOffset) + playerMovement.lastMoveDirection * attackForwardOffset;
 
-        Collider2D[] hitObjects = Physics2D.OverlapCircleAll(attackPosition, playerMovement.playerValues.attackRadius, enemyLayer);
+        // Detect enemies in attack range
+        Collider2D[] hitObjects = Physics2D.OverlapCircleAll(attackPosition, playerManager.playerValues.attackRadius, enemyLayer);
 
-        foreach(Collider2D objects in hitObjects)
+        // Deal damage to detected enemies
+        foreach (Collider2D objects in hitObjects)
         {
             IDamageable damageable = objects.GetComponent<IDamageable>();
 
-            if(damageable != null)
+            if (damageable != null)
             {
-                damageable.TakeDamage(playerMovement.playerValues.attackDamage);
+                damageable.TakeDamage(playerManager.playerValues.attackDamage);
             }
         }
-    }    
+    }
+
+    // Initialization method
+    private void Init()
+    {
+        // Get references to other scripts
+        playerManager = GetComponent<PlayerManager>();
+        playerMovement = GetComponent<PlayerMovement>();
+    }
 }

@@ -1,5 +1,5 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -12,7 +12,6 @@ public enum AIStates
 
 public class EnemyMovement : MonoBehaviour
 {
-
     [Header("Debug")]
     [SerializeField] private Transform currentTarget;
     [SerializeField] private AIStates states = AIStates.RunningState;
@@ -23,8 +22,8 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private LayerMask detectionLayer;
 
     [Header("Attack parameters")]
-    [SerializeField] private float attackForwardOffset = 1.4f; 
-    [SerializeField] private float attackHeightOffset = 1f; 
+    [SerializeField] private float attackForwardOffset = 1.4f;
+    [SerializeField] private float attackHeightOffset = 1f;
     [SerializeField] private float attackRadius = 1.2f;
     [SerializeField] private float attackRate = 2f;
     [SerializeField] private int attackDamage = 10;
@@ -35,10 +34,8 @@ public class EnemyMovement : MonoBehaviour
     private Animator enemyAnimator;
 
     private float distanceToTarget;
-
     private Vector2 moveDirection;
     private Vector2 attackPosition;
-
 
     void Start()
     {
@@ -47,82 +44,79 @@ public class EnemyMovement : MonoBehaviour
         StartCoroutine(HandleStates());
     }
 
-
     void Update()
     {
         attackPosition = new Vector2(transform.position.x, transform.position.y + attackHeightOffset) + moveDirection * attackForwardOffset;
-
         HandleAnimations();
-
         distanceToTarget = Vector2.Distance(currentTarget.position, transform.position);
         moveDirection = GetMoveDirection();
         enemyNavMesh.SetDestination(currentTarget.position);
     }
 
-private IEnumerator HandleStates()
-{
-    while (true)
+    // Coroutine to handle different AI states
+    private IEnumerator HandleStates()
     {
-        switch (states)
+        while (true)
         {
-            case AIStates.RunningState:
+            switch (states)
+            {
+                case AIStates.RunningState:
+                    currentTarget = TownHealth.Instance.transform;
 
-                currentTarget = TownHealth.Instance.transform;
+                    if (PlayerDetection())
+                    {
+                        states = AIStates.ChasingState;
+                        break;
+                    }
 
-                if(PlayerDetection() == true)
-                {
-                    states = AIStates.ChasingState;
+                    if (!PlayerDetection())
+                    {
+                        enemyNavMesh.SetDestination(currentTarget.position);
+
+                        if (Vector2.Distance(transform.position, currentTarget.position) <= enemyNavMesh.stoppingDistance)
+                        {
+                            states = AIStates.AttackState;
+                        }
+                    }
+
                     break;
-                }
-                    
-                if (!PlayerDetection())
-                {
-                    enemyNavMesh.SetDestination(currentTarget.position);
 
-                    if (Vector2.Distance(transform.position, currentTarget.position) <= enemyNavMesh.stoppingDistance)
+                case AIStates.ChasingState:
+                    currentTarget = PlayerManager.Instance.transform;
+
+                    if (distanceToTarget < attackRange)
                     {
                         states = AIStates.AttackState;
                     }
-                }
 
-                break;
+                    break;
 
-            case AIStates.ChasingState:
-                currentTarget = PlayerManager.Instance.transform;
+                case AIStates.AttackState:
+                    if (distanceToTarget < attackRange)
+                    {
+                        HandleAttack();
+                        yield return new WaitForSeconds(attackRate);
+                    }
+                    else if (PlayerDetection())
+                    {
+                        states = AIStates.ChasingState;
+                    }
+                    else
+                    {
+                        states = AIStates.RunningState;
+                    }
 
-                if (distanceToTarget < attackRange)
-                {
-                    states = AIStates.AttackState;
-                }
+                    break;
 
-                break;
+                default:
+                    break;
+            }
 
-            case AIStates.AttackState:
-
-                if (distanceToTarget < attackRange)
-                {
-                    HandleAttack();
-                    yield return new WaitForSeconds(attackRate);
-                }
-                else if(PlayerDetection())
-                {
-                    states = AIStates.ChasingState;
-                }
-                else
-                {
-                    states = AIStates.RunningState;
-                }
-
-                break;
-
-            default:
-                break;
+            yield return null;
         }
-
-        yield return null;
     }
-}
 
+    // Detects the player within the detection radius
     public bool PlayerDetection()
     {
         Collider2D[] detectedObjects = Physics2D.OverlapCircleAll(transform.position, detectionRadius, detectionLayer);
@@ -138,6 +132,7 @@ private IEnumerator HandleStates()
         return false;
     }
 
+    // Handles animations based on movement
     private void HandleAnimations()
     {
         enemyAnimator.SetFloat("Horizontal", moveDirection.x);
@@ -153,28 +148,29 @@ private IEnumerator HandleStates()
         }
     }
 
+    // Initiates the attack action
     private void HandleAttack()
     {
         enemyAnimator.SetTrigger("Attack");
-
         attackPosition = new Vector2(transform.position.x, transform.position.y + attackHeightOffset) + moveDirection * attackForwardOffset;
 
         Collider2D[] hitObjects = Physics2D.OverlapCircleAll(attackPosition, attackRadius, attackLayer);
 
-        foreach(Collider2D objects in hitObjects)
+        foreach (Collider2D objects in hitObjects)
         {
             IDamageable damageable = objects.GetComponent<IDamageable>();
 
-            if(damageable != null)
+            if (damageable != null)
             {
                 damageable.TakeDamage(attackDamage);
             }
         }
-    }        
+    }
 
+    // Calculates the movement direction towards the target
     private Vector2 GetMoveDirection()
     {
-        if(currentTarget == null)
+        if (currentTarget == null)
             return Vector2.zero;
 
         Vector2 moveDir = currentTarget.position - transform.position;
@@ -186,7 +182,8 @@ private IEnumerator HandleStates()
         return new Vector2(horizontal, vertical);
     }
 
-    private void OnDrawGizmosSelected() 
+    // Draws gizmos for attack and detection ranges
+    private void OnDrawGizmosSelected()
     {
         Gizmos.DrawWireSphere(attackPosition, attackRange);
         Gizmos.color = Color.red;
@@ -195,11 +192,11 @@ private IEnumerator HandleStates()
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
 
+    // Initializes necessary components
     private void Init()
     {
         enemyNavMesh = GetComponent<NavMeshAgent>();
         enemyAnimator = GetComponentInChildren<Animator>();
         enemyManager = GetComponent<EnemyManager>();
     }
-     
 }

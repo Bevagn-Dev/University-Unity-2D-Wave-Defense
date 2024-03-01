@@ -1,69 +1,125 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 using UnityEngine.Events;
 
-public class PlayerManager : MonoBehaviour , IDamageable
-{    
-    public static PlayerManager Instance{get; private set;}
-    public PlayerMovement playerMovement;
-    
+public class PlayerManager : MonoBehaviour, IDamageable
+{
+    // Singleton instance
+    public static PlayerManager Instance { get; private set; }
 
-    public int maxHealth;
-    public int startingMoney;
+    // Player values
+    [Header("Player Values")]
+    public PlayerValues playerValues;
 
-    public PlayerHealthBar healthBar;
-    public UnityEvent updateMoney;
+    // Initial money
+    public int startingMoney = 10;
+
+    // Safety period after taking damage
+    [SerializeField] private float safetyPeriod = 5f;
+
+    // Events
+    [HideInInspector]
     public UnityEvent playerDeath;
 
+    // Current health and money
+    [HideInInspector]
     public int currentHealth;
+    [HideInInspector]
     public int currentMoney;
 
+    // Components
+    [HideInInspector]
+    public PlayerMovement playerMovement;
 
-    private void Awake() 
+    private PlayerUI playerUI;
+    private PlayerHealthBar healthBar;
+
+    private float lastDamageTime;
+
+    private Coroutine regenerateCoroutine;
+
+    private void Awake()
     {
-       if(Instance != null && Instance != this)
-       {
+        if (Instance != null && Instance != this)
+        {
             Destroy(this);
-       }
-       else
-       {
+        }
+        else
+        {
             Instance = this;
-       }
-        
-        updateMoney.AddListener(GameObject.FindGameObjectWithTag("PlayerUI").GetComponent<PlayerUI>().UpdateMoneyText);
-        playerDeath.AddListener(GameObject.FindGameObjectWithTag("PlayerUI").GetComponent<PlayerUI>().SetPlayerDeathScreen);
-        playerMovement = GetComponent<PlayerMovement>();
+        }
 
-        currentMoney = startingMoney;
-        currentHealth = maxHealth;
-        healthBar.SetMaxHealth(maxHealth);
+        // Initialize player
+        Init();
     }
 
     private void Update()
     {
-        healthBar.setHealth(currentHealth);
-    }
+        // Update health bar
+        healthBar.SetHealth(currentHealth);
 
-    public void TakeDamage(int Damage)
-    {
-
-        Debug.Log("Hit");
-
-        currentHealth -= Damage;
-
-        if(currentHealth <0 )
+        // Check safety period for health regeneration
+        if (Time.time - lastDamageTime >= safetyPeriod && regenerateCoroutine == null)
         {
-            currentHealth = 0;
-            playerDeath.Invoke();
-            Destroy(gameObject, 1);
+            regenerateCoroutine = StartCoroutine(RegenHealth());
         }
     }
 
-    public void AddMoney()
+    // Method to handle taking damage
+    public void TakeDamage(int Damage)
     {
-        currentMoney += 10;
-        updateMoney.Invoke();
+        currentHealth -= Damage;
+
+        lastDamageTime = Time.time;
+
+        if (currentHealth < 0)
+        {
+            currentHealth = 0;
+            playerDeath.Invoke();
+
+            Destroy(gameObject, 1);
+        }
+
+        // Stop health regeneration coroutine if running
+        if (regenerateCoroutine != null)
+        {
+            StopCoroutine(regenerateCoroutine);
+            regenerateCoroutine = null;
+        }
+    }
+
+    // Method to increment money
+    public void IncrementMoney(int money)
+    {
+        currentMoney += money;
+    }
+
+    // Coroutine for health regeneration
+    IEnumerator RegenHealth()
+    {
+        yield return new WaitForSeconds(playerValues.regenDelay);
+
+        while (currentHealth < playerValues.maxHealth)
+        {
+            currentHealth += playerValues.regenAmount;
+            yield return new WaitForSeconds(1f);
+        }
+
+        regenerateCoroutine = null;
+    }
+
+    // Initialization method
+    private void Init()
+    {
+        playerUI = FindObjectOfType<PlayerUI>();
+        healthBar = FindObjectOfType<PlayerHealthBar>();
+        playerDeath.AddListener(() => playerUI.SetPlayerDeathScreen("YOU DIED!"));
+
+        playerMovement = GetComponent<PlayerMovement>();
+
+        currentMoney = startingMoney;
+        currentHealth = playerValues.maxHealth;
+        healthBar.SetMaxHealth(playerValues.maxHealth);
     }
 
 }

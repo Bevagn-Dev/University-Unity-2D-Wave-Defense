@@ -1,40 +1,64 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class EnemySpawn : MonoBehaviour
 {
+    // Singleton instance
+    public static EnemySpawn Instance { get; private set; }
+
+    // List of enemy types
+    [Header("Enemy Types")]
     public List<Enemy> enemies = new List<Enemy>();
-    public int currWave;
-    private int waveValue;
-    public List<GameObject> enemiesToSpawn = new List<GameObject>();
 
+    // Array of spawn locations
+    [Header("Spawn Locations")]
     public Transform[] spawnLocation;
-    public int spawnIndex;
 
-    public int waveDuration;
+    [Space(20)]
+
+    // Spawner options
+    [Header("Spawner Options")]
+    [SerializeField] private int initialEnemyCount = 5;
+    [SerializeField] private int enemyIncrementPerWave = 2;
+    [SerializeField] private int waveDuration = 2;
+
+    // Current wave number
+    public int currentWave;
+
+    // Timers and indices
     private float waveTimer;
     private float spawnInterval;
     private float spawnTimer;
+    private int waveValue;
+    private int spawnIndex;
 
+    // Lists to store enemies to spawn and spawned enemies
+    [HideInInspector]
+    public List<GameObject> enemiesToSpawn = new List<GameObject>();
+    [HideInInspector]
     public List<GameObject> spawnedEnemies = new List<GameObject>();
 
-    public int initialEnemyCount = 5;
-    public int enemyIncrementPerWave = 2;
 
-    public UnityEvent updateWaveCount;
-
-    private void Awake() 
+    private void Awake()
     {
-        updateWaveCount.AddListener(GameObject.FindGameObjectWithTag("PlayerUI").GetComponent<PlayerUI>().IncreaseWaveCount);        
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
     }
 
+    // Start enemy spawning coroutine
     public void StartEnemySpawning()
     {
         StartCoroutine(SpawnEnemiesCoroutine());
     }
 
+    // Coroutine to spawn enemies
     private IEnumerator SpawnEnemiesCoroutine()
     {
         while (true)
@@ -70,8 +94,7 @@ public class EnemySpawn : MonoBehaviour
 
             if (waveTimer <= 0 && spawnedEnemies.Count <= 0)
             {
-                updateWaveCount.Invoke();
-                currWave++;
+                currentWave++;
                 GenerateWave();
             }
 
@@ -79,22 +102,34 @@ public class EnemySpawn : MonoBehaviour
         }
     }
 
+    // Generate wave of enemies
     public void GenerateWave()
     {
-        waveValue = initialEnemyCount + (currWave - 1) * enemyIncrementPerWave;
+        waveValue = initialEnemyCount + (currentWave - 1) * enemyIncrementPerWave;
         GenerateEnemies();
 
-        spawnInterval = waveDuration / enemiesToSpawn.Count;
+        // Calculate spawn interval based on wave duration and enemies to spawn
+        if (enemiesToSpawn.Count > 0)
+        {
+            spawnInterval = waveDuration / enemiesToSpawn.Count;
+        }
+        else
+        {
+            spawnInterval = 0;
+        }
+
         waveTimer = waveDuration;
     }
 
+    // Generate enemies to spawn
     public void GenerateEnemies()
     {
         List<GameObject> generatedEnemies = new List<GameObject>();
         int totalCost = 0;
 
-        int maxTotalCost = initialEnemyCount + (currWave - 1) * enemyIncrementPerWave;
+        int maxTotalCost = initialEnemyCount + (currentWave - 1) * enemyIncrementPerWave;
 
+        // Randomly select enemies to spawn based on cost constraints
         while (totalCost < maxTotalCost && generatedEnemies.Count < 50)
         {
             int randEnemyId = Random.Range(0, enemies.Count);
@@ -110,6 +145,8 @@ public class EnemySpawn : MonoBehaviour
                 break;
             }
         }
+
+        // Update list of enemies to spawn
         enemiesToSpawn.Clear();
         enemiesToSpawn = generatedEnemies;
     }
@@ -118,6 +155,8 @@ public class EnemySpawn : MonoBehaviour
 [System.Serializable]
 public class Enemy
 {
+    // Enemy name, prefab, and cost
+    public string enemyName;
     public GameObject enemyPrefab;
     public int cost;
 }

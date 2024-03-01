@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f0c87d16bcd888408f950661bcc4f12, type: 3}
   m_Name: BaseValues
   m_EditorClassIdentifier: 
+  maxHealth: 80
+  regenAmount: 8
+  regenDelay: 5
   walkSpeed: 3
-  sprintSpeed: 8
-  attackDamage: 25
+  sprintSpeed: 5
+  attackDamage: 15
   attackRadius: 1
-  attackRate: 3
+  attackRate: 2
